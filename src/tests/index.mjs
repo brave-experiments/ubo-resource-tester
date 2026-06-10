@@ -41,45 +41,45 @@ export default [
   {
     id: 'aeld',
     rules: ['{{HOST}}##+js(aeld, click)'],
-    setup: function() {
-      window.testAeldClicked = false;
+    setup: function(ctx) {
+      ctx.clicked = false;
       document.body.addEventListener('click', function() {
-        window.testAeldClicked = true;
+        ctx.clicked = true;
       });
     },
-    check: function() {
+    check: function(ctx) {
       document.body.dispatchEvent(new Event('click'));
-      return { pass: window.testAeldClicked === false, detail: 'clicked = ' + window.testAeldClicked };
+      return { pass: ctx.clicked === false, detail: 'clicked = ' + ctx.clicked };
     }
   },
   {
     id: 'prevent-setTimeout',
     rules: ['{{HOST}}##+js(prevent-setTimeout, prevent-setTimeout-needle!)'],
-    setup: function() {
-      window.testSetTimeoutFired = false;
+    setup: function(ctx) {
+      ctx.timeoutFired = false;
       setTimeout(function() {
-        window.testSetTimeoutFired = true; /* prevent-setTimeout-needle! */
+        ctx.timeoutFired = true; /* prevent-setTimeout-needle! */
       }, 5);
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 30));
-      return { pass: window.testSetTimeoutFired === false, detail: 'timeoutFired = ' + window.testSetTimeoutFired };
+      return { pass: ctx.timeoutFired === false, detail: 'timeoutFired = ' + ctx.timeoutFired };
     }
   },
   {
     id: 'prevent-setInterval',
     rules: ['{{HOST}}##+js(prevent-setInterval, prevent-setInterval-needle!)'],
-    setup: function() {
-      window.testSetIntervalCount = 0;
+    setup: function(ctx) {
+      ctx.intervalCount = 0;
       const id = setInterval(function() {
-        window.testSetIntervalCount++; /* prevent-setInterval-needle! */
+        ctx.intervalCount++; /* prevent-setInterval-needle! */
       }, 5);
-      window.testSetIntervalId = id;
+      ctx.intervalId = id;
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 30));
-      if (window.testSetIntervalId) clearInterval(window.testSetIntervalId);
-      return { pass: window.testSetIntervalCount === 0, detail: 'intervalCount = ' + window.testSetIntervalCount };
+      if (ctx.intervalId) clearInterval(ctx.intervalId);
+      return { pass: ctx.intervalCount === 0, detail: 'intervalCount = ' + ctx.intervalCount };
     }
   },
   {
@@ -194,65 +194,65 @@ export default [
   {
     id: 'prevent-fetch',
     rules: ['{{HOST}}##+js(prevent-fetch, /test-prevent-fetch\\.json/)'],
-    setup: function() {
-      window.testPreventFetchResult = null;
+    setup: function(ctx) {
+      ctx.result = null;
       fetch('/resources/test-prevent-fetch.json')
         .then(r => r.text())
-        .then(function(t) { window.testPreventFetchResult = t; })
-        .catch(function(e) { window.testPreventFetchResult = 'ERROR:' + e.message; });
+        .then(function(t) { ctx.result = t; })
+        .catch(function(e) { ctx.result = 'ERROR:' + e.message; });
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const pass = window.testPreventFetchResult === '';
-      return { pass: pass, detail: 'fetch result length = ' + (window.testPreventFetchResult ? window.testPreventFetchResult.length : 'null') };
+      const pass = ctx.result === '';
+      return { pass: pass, detail: 'fetch result length = ' + (ctx.result ? ctx.result.length : 'null') };
     }
   },
   {
     id: 'trusted-prevent-fetch',
     rules: ['{{HOST}}##+js(trusted-prevent-fetch, /test-trusted-prevent-fetch\\.json/)'],
-    setup: function() {
-      window.testTrustedPreventFetchResult = null;
+    setup: function(ctx) {
+      ctx.result = null;
       fetch('/resources/test-trusted-prevent-fetch.json')
         .then(r => r.text())
-        .then(function(t) { window.testTrustedPreventFetchResult = t; })
-        .catch(function(e) { window.testTrustedPreventFetchResult = 'ERROR:' + e.message; });
+        .then(function(t) { ctx.result = t; })
+        .catch(function(e) { ctx.result = 'ERROR:' + e.message; });
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const pass = window.testTrustedPreventFetchResult === '';
-      return { pass: pass, detail: 'trusted fetch result length = ' + (window.testTrustedPreventFetchResult ? window.testTrustedPreventFetchResult.length : 'null') };
+      const pass = ctx.result === '';
+      return { pass: pass, detail: 'trusted fetch result length = ' + (ctx.result ? ctx.result.length : 'null') };
     }
   },
   {
     id: 'prevent-xhr',
     rules: ['{{HOST}}##+js(prevent-xhr, /test-prevent-xhr\\.json/)'],
-    setup: function() {
-      window.testPreventXhrResult = null;
+    setup: function(ctx) {
+      ctx.result = null;
       const xhr = new XMLHttpRequest();
       xhr.open('GET', '/resources/test-prevent-xhr.json', true);
-      xhr.onload = function() { window.testPreventXhrResult = xhr.responseText; };
-      xhr.onerror = function() { window.testPreventXhrResult = 'ERROR'; };
+      xhr.onload = function() { ctx.result = xhr.responseText; };
+      xhr.onerror = function() { ctx.result = 'ERROR'; };
       xhr.send();
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const pass = window.testPreventXhrResult === '';
-      return { pass: pass, detail: 'xhr result length = ' + (window.testPreventXhrResult ? window.testPreventXhrResult.length : 'null') };
+      const pass = ctx.result === '';
+      return { pass: pass, detail: 'xhr result length = ' + (ctx.result ? ctx.result.length : 'null') };
     }
   },
   {
     id: 'json-prune',
     rules: ['{{HOST}}##+js(json-prune, test_json_prune)'],
-    setup: function() {
-      window.testJsonPruneResult = null;
+    setup: function(ctx) {
+      ctx.result = null;
       fetch('/resources/test-json-prune.json')
         .then(r => r.text())
-        .then(function(j) { window.testJsonPruneResult = JSON.parse(j); })
-        .catch(function(e) { window.testJsonPruneResult = { _error: e.message }; });
+        .then(function(j) { ctx.result = JSON.parse(j); })
+        .catch(function(e) { ctx.result = { _error: e.message }; });
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const r = window.testJsonPruneResult;
+      const r = ctx.result;
       const pass = r && r.test_json_prune === undefined && r.data && Array.isArray(r.data);
       return { pass: pass, detail: 'field pruned = ' + (r ? (r.test_json_prune === undefined ? 'yes' : 'no') : 'null') };
     }
@@ -260,16 +260,16 @@ export default [
   {
     id: 'json-prune-fetch-response',
     rules: ['{{HOST}}##+js(json-prune-fetch-response, test_json_prune_fetch_response)'],
-    setup: function() {
-      window.testJsonPruneFetchResponseResult = null;
+    setup: function(ctx) {
+      ctx.result = null;
       fetch('/resources/test-json-prune-fetch-response.json')
         .then(r => r.json())
-        .then(function(j) { window.testJsonPruneFetchResponseResult = j; })
-        .catch(function(e) { window.testJsonPruneFetchResponseResult = { _error: e.message }; });
+        .then(function(j) { ctx.result = j; })
+        .catch(function(e) { ctx.result = { _error: e.message }; });
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const r = window.testJsonPruneFetchResponseResult;
+      const r = ctx.result;
       const pass = r && r.test_json_prune_fetch_response === undefined && r.data && Array.isArray(r.data);
       return { pass: pass, detail: 'field pruned = ' + (r ? (r.test_json_prune_fetch_response === undefined ? 'yes' : 'no') : 'null') };
     }
@@ -277,16 +277,16 @@ export default [
   {
     id: 'trusted-replace-fetch-response',
     rules: ['{{HOST}}##+js(trusted-replace-fetch-response, test_trusted_replace_fetch_response, testPass)'],
-    setup: function() {
-      window.testTrustedReplaceFetchResult = null;
+    setup: function(ctx) {
+      ctx.result = null;
       fetch('/resources/test-trusted-replace-fetch-response.json')
         .then(r => r.json())
-        .then(function(t) { window.testTrustedReplaceFetchResult = t; })
-        .catch(function(e) { window.testTrustedReplaceFetchResult = 'ERROR:' + e.message; });
+        .then(function(t) { ctx.result = t; })
+        .catch(function(e) { ctx.result = 'ERROR:' + e.message; });
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const r = window.testTrustedReplaceFetchResult;
+      const r = ctx.result;
       const pass = r.testPass !== undefined && r.data !== undefined && Array.isArray(r.data);
       return { pass, detail: 'replaced = ' + JSON.stringify(r) };
     }
@@ -319,33 +319,33 @@ export default [
   {
     id: 'redirect-1x1-gif',
     rules: ['/resources/test-redirect-1x1-gif.gif^$image,redirect=1x1.gif'],
-    setup: function() {
-      window.test1x1GifLoaded = false;
-      window.test1x1GifError = false;
+    setup: function(ctx) {
+      ctx.gifLoaded = false;
+      ctx.gifError = false;
       const img = new Image();
-      img.onload = function() { window.test1x1GifLoaded = true; };
-      img.onerror = function() { window.test1x1GifError = true; };
+      img.onload = function() { ctx.gifLoaded = true; };
+      img.onerror = function() { ctx.gifError = true; };
       img.src = '/resources/test-redirect-1x1-gif.gif';
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      return { pass: window.test1x1GifLoaded === true, detail: 'loaded = ' + window.test1x1GifLoaded + ', error = ' + window.test1x1GifError };
+      return { pass: ctx.gifLoaded === true, detail: 'loaded = ' + ctx.gifLoaded + ', error = ' + ctx.gifError };
     }
   },
   {
     id: 'redirect-noop-json',
     rules: ['/resources/test-redirect-noop-json.json^$xmlhttprequest,redirect=noop.json'],
-    setup: function() {
-      window.testNoopJsonResult = null;
+    setup: function(ctx) {
+      ctx.result = null;
       fetch('/resources/test-redirect-noop-json.json')
         .then(r => r.text())
-        .then(function(t) { window.testNoopJsonResult = t; })
-        .catch(function(e) { window.testNoopJsonResult = 'ERROR'; });
+        .then(function(t) { ctx.result = t; })
+        .catch(function(e) { ctx.result = 'ERROR'; });
     },
-    check: async function() {
+    check: async function(ctx) {
       await new Promise(resolve => setTimeout(resolve, 300));
-      const pass = window.testNoopJsonResult === '{}';
-      return { pass: pass, detail: 'json = ' + window.testNoopJsonResult };
+      const pass = ctx.result === '{}';
+      return { pass: pass, detail: 'json = ' + ctx.result };
     }
   },
   {

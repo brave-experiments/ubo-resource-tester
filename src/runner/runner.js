@@ -69,10 +69,11 @@
   }
 
   function runSingle(test, _idx) {
+    const ctx = {};
     return new Promise(function(resolve) {
       try {
         if (test.setup) {
-          (test.setup)();
+          (test.setup)(ctx);
         }
       } catch (e) {
         results.push({ id: test.id, pass: false, detail: 'setup threw: ' + e.message });
@@ -82,7 +83,7 @@
 
       let checkResult;
       try {
-        checkResult = (test.check)();
+        checkResult = (test.check)(ctx);
       } catch (e) {
         results.push({ id: test.id, pass: false, detail: 'check threw: ' + e.message });
         resolve();
