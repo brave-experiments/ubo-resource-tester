@@ -49,10 +49,7 @@ function generateIndexHtml(testList, secondaryPages) {
 
 function generateFilters(testList, host) {
   const lines = [];
-  lines.push('! uBO Scriptlet / Resource Regression Test Suite');
-  lines.push('! Generated for host: ' + host);
-  lines.push('! Apply this in uBO > My filters or subscribe as a list.');
-  lines.push('! Tests requiring [Trusted] scriptlets need "Allow custom filters requiring trust" enabled.');
+  lines.push(`! Title: uBO Scriptlet & Resource Test Suite for ${host}`);
   lines.push('');
 
   testList.forEach(function(test) {

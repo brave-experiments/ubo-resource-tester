@@ -308,7 +308,7 @@ export default [
   },
   {
     id: 'redirect-noop-js',
-    rules: ['/resources/test-redirect-noop.js^$script,redirect=noop.js'],
+    rules: ['/resources/test-redirect-noop.js^$domain={{HOST}},script,redirect=noop.js'],
     setupHtml: '<script src="/resources/test-redirect-noop.js"></script>',
     setup: function() {},
     check: async function() {
@@ -318,7 +318,7 @@ export default [
   },
   {
     id: 'redirect-1x1-gif',
-    rules: ['/resources/test-redirect-1x1-gif.gif^$image,redirect=1x1.gif'],
+    rules: ['/resources/test-redirect-1x1-gif.gif^$domain={{HOST}},image,redirect=1x1.gif'],
     setup: function(ctx) {
       ctx.gifLoaded = false;
       ctx.gifError = false;
@@ -334,7 +334,7 @@ export default [
   },
   {
     id: 'redirect-noop-json',
-    rules: ['/resources/test-redirect-noop-json.json^$xmlhttprequest,redirect=noop.json'],
+    rules: ['/resources/test-redirect-noop-json.json^$domain={{HOST}},xmlhttprequest,redirect=noop.json'],
     setup: function(ctx) {
       ctx.result = null;
       fetch('/resources/test-redirect-noop-json.json')
@@ -350,7 +350,7 @@ export default [
   },
   {
     id: 'redirect-surrogate-adsbygoogle',
-    rules: ['/resources/test-redirect-surrogate-adsbygoogle.js^$script,redirect=googlesyndication_adsbygoogle.js'],
+    rules: ['/resources/test-redirect-surrogate-adsbygoogle.js^$domain={{HOST}},script,redirect=googlesyndication_adsbygoogle.js'],
     setupHtml: '<script src="/resources/test-redirect-surrogate-adsbygoogle.js"></script>',
     setup: function() {},
     check: async function() {
