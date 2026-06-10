@@ -105,12 +105,27 @@
     #setup {
       display: none;
     }
+    .retry-btn {
+      display: inline-block;
+      padding: 4px 18px;
+      margin-left: 12px;
+      background: #2a2a4a;
+      color: #80cbc4;
+      border: 1px solid #444;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    .retry-btn:hover {
+      background: #3a3a5a;
+    }
   </style>
 </head>
 <body>
   <div id="setup">{{FIXTURE_HTML}}</div>
   <h1>uBO Scriptlet &amp; Resource Regression Tests</h1>
-  <h4>Tests require adding <a href="/filters.txt">this filter list</a> to your adblocker's custom filters.</h2>
+  <h4>Tests require adding <a href="/filters.txt">this filter list</a> to your adblocker's custom filters. <button class="retry-btn" onclick="window.__retryTests()">Clear storage and retry</button></h4>
 {{SECONDARY_SECTION}}
   <div id="test-results">
     <div id="test-summary" class="summary-pending">
