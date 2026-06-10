@@ -2,7 +2,7 @@
   'use strict';
 
   const resultsContainer = document.getElementById('ubo-test-results');
-  const tests = window.__UBO_TESTS__ || [];
+  const tests = window.__RESOURCE_TESTS__ || [];
   const results = [];
 
   if (!resultsContainer) {
@@ -60,7 +60,7 @@
     const overallPass = failCount === 0;
     document.documentElement.dataset.uboTests = overallPass ? 'pass' : 'fail';
 
-    window.__UBO_TEST_RESULTS__ = {
+    window.__RESOURCE_TEST_RESULTS__ = {
       host: window.location.hostname,
       generatedAt: new Date().toISOString(),
       summary: { total: tests.length, pass: passCount, fail: failCount },
@@ -68,12 +68,11 @@
     };
   }
 
-  function runSingle(test, idx) {
+  function runSingle(test, _idx) {
     return new Promise(function(resolve) {
       try {
         if (test.setup) {
-          const setupFn = new Function(test.setup);
-          setupFn();
+          (test.setup)();
         }
       } catch (e) {
         results.push({ id: test.id, pass: false, detail: 'setup threw: ' + e.message });
@@ -83,8 +82,7 @@
 
       let checkResult;
       try {
-        const checkFn = new Function(test.check);
-        checkResult = checkFn();
+        checkResult = (test.check)();
       } catch (e) {
         results.push({ id: test.id, pass: false, detail: 'check threw: ' + e.message });
         resolve();
@@ -112,7 +110,7 @@
   }
 
   function runAll() {
-    setTimeout(() => Promise.all(tests.map((test, idx) => runSingle(test, idx))).then(renderResults), 100);
+    setTimeout(() => Promise.all(tests.map(runSingle)).then(renderResults), 100);
   }
 
   runAll();

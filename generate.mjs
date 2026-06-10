@@ -8,14 +8,6 @@ const HOST = process.argv[2] || 'localhost';
 
 const tests = (await import('./src/tests/index.mjs')).default;
 
-function escapeForScript(str) {
-  return str
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'")
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r');
-}
-
 function generateIndexHtml(testList, secondaryPages) {
   const runner = readFileSync(resolve(__dirname, 'src/runner/runner.js'), 'utf-8');
 
@@ -30,11 +22,11 @@ function generateIndexHtml(testList, secondaryPages) {
   }
 
   const testData = testList.map(function(t) {
-    return JSON.stringify({
-      id: t.id,
-      setup: t.setup,
-      check: t.check
-    });
+    return '{\n' +
+      '    id: ' + JSON.stringify(t.id) + ',\n' +
+      '    setup: ' + t.setup.toString() + ',\n' +
+      '    check: ' + t.check.toString() + '\n' +
+      '  }';
   }).join(',\n    ');
 
   const secondaryLinks = (secondaryPages || []).map(function(sp) {
@@ -73,7 +65,7 @@ function generateIndexHtml(testList, secondaryPages) {
 '  <div id="ubo-test-results"></div>\n' +
 (secondaryLinks ? '  <div class="secondary-pages">\n    <h2>Secondary test pages</h2>\n    <ul>\n      ' + secondaryLinks + '\n    </ul>\n  </div>\n' : '') +
 '  <script>\n' +
-'    window.__UBO_TESTS__ = [\n    ' + testData + '\n    ];\n' +
+'    window.__RESOURCE_TESTS__ = [\n    ' + testData + '\n    ];\n' +
 '  </script>\n' +
 '  <script>\n' +
 '    (function() {\n' +
