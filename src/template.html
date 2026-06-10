@@ -37,6 +37,9 @@
     .fail {
       background: #3a1b1b;
     }
+    .pending {
+      background: #2a2a1a;
+    }
     .status {
       font-weight: bold;
       min-width: 40px;
@@ -47,6 +50,9 @@
     .fail .status {
       color: #f44336;
     }
+    .pending .status {
+      color: #ffc107;
+    }
     .id {
       color: #80cbc4;
       min-width: 200px;
@@ -55,7 +61,7 @@
       color: #aaa;
       font-size: 12px;
     }
-    .summary {
+    #test-summary {
       margin-top: 20px;
       padding: 12px;
       border-radius: 4px;
@@ -70,6 +76,10 @@
     .summary-fail {
       background: #b71c1c;
       color: #ef9a9a;
+    }
+    .summary-pending {
+      background: #4a4a1a;
+      color: #ffe082;
     }
     .secondary-pages {
       margin-top: 24px;
@@ -94,7 +104,11 @@
   <div id="setup">{{FIXTURE_HTML}}</div>
   <h1>uBO Scriptlet / Resource Regression Tests</h1>
 {{SECONDARY_SECTION}}
-  <div id="test-results"></div>
+  <div id="test-results">
+    <div id="test-summary" class="summary-pending">
+      <noscript>This test site will not function without JavaScript enabled.</noscript>
+    </div>
+  </div>
   <script>
     window.__RESOURCE_TESTS__ = [
     {{TEST_DATA}}
