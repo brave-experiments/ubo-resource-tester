@@ -1,17 +1,17 @@
 (function() {
   'use strict';
 
-  const resultsContainer = document.getElementById('ubo-test-results');
+  const resultsContainer = document.getElementById('test-results');
   const tests = window.__RESOURCE_TESTS__ || [];
   const results = [];
 
   if (!resultsContainer) {
     resultsContainer = document.createElement('div');
-    resultsContainer.id = 'ubo-test-results';
+    resultsContainer.id = 'test-results';
     document.body.appendChild(resultsContainer);
   }
 
-  document.documentElement.dataset.uboTests = 'running';
+  document.documentElement.dataset.resourceTests = 'running';
 
   function renderResults() {
     let passCount = 0;
@@ -20,21 +20,21 @@
 
     results.forEach(function(r) {
       const row = document.createElement('div');
-      row.className = 'ubo-test-row ' + (r.pass ? 'ubo-pass' : 'ubo-fail');
+      row.className = 'test-row ' + (r.pass ? 'pass' : 'fail');
 
       const statusEl = document.createElement('span');
-      statusEl.className = 'ubo-status';
+      statusEl.className = 'status';
       statusEl.textContent = r.pass ? 'PASS' : 'FAIL';
       row.appendChild(statusEl);
 
       const idEl = document.createElement('span');
-      idEl.className = 'ubo-id';
+      idEl.className = 'id';
       idEl.textContent = r.id;
       row.appendChild(idEl);
 
       if (r.detail) {
         const detailEl = document.createElement('span');
-        detailEl.className = 'ubo-detail';
+        detailEl.className = 'detail';
         detailEl.textContent = r.detail;
         row.appendChild(detailEl);
       }
@@ -45,20 +45,20 @@
     });
 
     const summary = document.createElement('div');
-    summary.className = 'ubo-summary';
+    summary.className = 'summary';
 
     if (failCount === 0) {
       summary.textContent = 'ALL TESTS PASS (' + passCount + '/' + tests.length + ')';
-      summary.className += ' ubo-summary-pass';
+      summary.className += ' summary-pass';
     } else {
       summary.textContent = 'FAILURES: ' + failCount + ' / ' + tests.length + ' total (pass: ' + passCount + ')';
-      summary.className += ' ubo-summary-fail';
+      summary.className += ' summary-fail';
     }
 
     resultsContainer.prepend(summary);
 
     const overallPass = failCount === 0;
-    document.documentElement.dataset.uboTests = overallPass ? 'pass' : 'fail';
+    document.documentElement.dataset.resourceTests = overallPass ? 'pass' : 'fail';
 
     window.__RESOURCE_TEST_RESULTS__ = {
       host: window.location.hostname,

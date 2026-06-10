@@ -1,1 +1,1 @@
-window.__testRedirectNoop__ = 'ad-loaded';
+window.__testNoopJs__ = 'ad-loaded';
