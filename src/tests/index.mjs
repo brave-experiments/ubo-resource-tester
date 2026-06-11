@@ -210,98 +210,87 @@ export default [
     id: 'prevent-fetch',
     rules: ['{{HOST}}##+js(prevent-fetch, /test-prevent-fetch\\.json/)'],
     setup: function(ctx) {
-      ctx.result = null;
-      fetch('/resources/test-prevent-fetch.json')
+      ctx.result = fetch('/resources/test-prevent-fetch.json')
         .then(r => r.text())
-        .then(function(t) { ctx.result = t; })
-        .catch(function(e) { ctx.result = 'ERROR:' + e.message; });
+        .catch(e => 'ERROR:' + e.message);
     },
     check: async function(ctx) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const pass = ctx.result === '';
-      return { pass: pass, detail: 'fetch result length = ' + (ctx.result ? ctx.result.length : 'null') };
+      const r = await ctx.result;
+      const pass = r === '';
+      return { pass, detail: 'fetch result length = ' + (r ? r.length : 'null') };
     }
   },
   {
     id: 'trusted-prevent-fetch',
     rules: ['{{HOST}}##+js(trusted-prevent-fetch, /test-trusted-prevent-fetch\\.json/)'],
     setup: function(ctx) {
-      ctx.result = null;
-      fetch('/resources/test-trusted-prevent-fetch.json')
+      ctx.result = fetch('/resources/test-trusted-prevent-fetch.json')
         .then(r => r.text())
-        .then(function(t) { ctx.result = t; })
-        .catch(function(e) { ctx.result = 'ERROR:' + e.message; });
+        .catch(e => 'ERROR:' + e.message);
     },
     check: async function(ctx) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const pass = ctx.result === '';
-      return { pass: pass, detail: 'trusted fetch result length = ' + (ctx.result ? ctx.result.length : 'null') };
+      const r = await ctx.result;
+      const pass = r === '';
+      return { pass, detail: 'trusted fetch result length = ' + (r ? r.length : 'null') };
     }
   },
   {
     id: 'prevent-xhr',
     rules: ['{{HOST}}##+js(prevent-xhr, /test-prevent-xhr\\.json/)'],
     setup: function(ctx) {
-      ctx.result = null;
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', '/resources/test-prevent-xhr.json', true);
-      xhr.onload = function() { ctx.result = xhr.responseText; };
-      xhr.onerror = function() { ctx.result = 'ERROR'; };
-      xhr.send();
+      ctx.result = new Promise(resolve => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '/resources/test-prevent-xhr.json', true);
+        xhr.onload = function() { resolve(xhr.responseText); };
+        xhr.onerror = function() { resolve('ERROR'); };
+        xhr.send();
+      });
     },
     check: async function(ctx) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const pass = ctx.result === '';
-      return { pass: pass, detail: 'xhr result length = ' + (ctx.result ? ctx.result.length : 'null') };
+      const r = await ctx.result;
+      const pass = r === '';
+      return { pass, detail: 'xhr result length = ' + (r ? r.length : 'null') };
     }
   },
   {
     id: 'json-prune',
     rules: ['{{HOST}}##+js(json-prune, test_json_prune)'],
     setup: function(ctx) {
-      ctx.result = null;
-      fetch('/resources/test-json-prune.json')
+      ctx.result = fetch('/resources/test-json-prune.json')
         .then(r => r.text())
-        .then(function(j) { ctx.result = JSON.parse(j); })
-        .catch(function(e) { ctx.result = { _error: e.message }; });
+        .then(j => JSON.parse(j))
+        .catch(e => ({ _error: e.message }));
     },
     check: async function(ctx) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const r = ctx.result;
+      const r = await ctx.result;
       const pass = r && r.test_json_prune === undefined && r.data && Array.isArray(r.data);
-      return { pass: pass, detail: 'field pruned = ' + (r ? (r.test_json_prune === undefined ? 'yes' : 'no') : 'null') };
+      return { pass, detail: 'field pruned = ' + (r ? (r.test_json_prune === undefined ? 'yes' : 'no') : 'null') };
     }
   },
   {
     id: 'json-prune-fetch-response',
     rules: ['{{HOST}}##+js(json-prune-fetch-response, test_json_prune_fetch_response)'],
     setup: function(ctx) {
-      ctx.result = null;
-      fetch('/resources/test-json-prune-fetch-response.json')
+      ctx.result = fetch('/resources/test-json-prune-fetch-response.json')
         .then(r => r.json())
-        .then(function(j) { ctx.result = j; })
-        .catch(function(e) { ctx.result = { _error: e.message }; });
+        .catch(e => ({ _error: e.message }));
     },
     check: async function(ctx) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const r = ctx.result;
+      const r = await ctx.result;
       const pass = r && r.test_json_prune_fetch_response === undefined && r.data && Array.isArray(r.data);
-      return { pass: pass, detail: 'field pruned = ' + (r ? (r.test_json_prune_fetch_response === undefined ? 'yes' : 'no') : 'null') };
+      return { pass, detail: 'field pruned = ' + (r ? (r.test_json_prune_fetch_response === undefined ? 'yes' : 'no') : 'null') };
     }
   },
   {
     id: 'trusted-replace-fetch-response',
     rules: ['{{HOST}}##+js(trusted-replace-fetch-response, test_trusted_replace_fetch_response, testPass)'],
     setup: function(ctx) {
-      ctx.result = null;
-      fetch('/resources/test-trusted-replace-fetch-response.json')
+      ctx.result = fetch('/resources/test-trusted-replace-fetch-response.json')
         .then(r => r.json())
-        .then(function(t) { ctx.result = t; })
-        .catch(function(e) { ctx.result = 'ERROR:' + e.message; });
+        .catch(e => 'ERROR:' + e.message);
     },
     check: async function(ctx) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const r = ctx.result;
+      const r = await ctx.result;
       const pass = r.testPass !== undefined && r.data !== undefined && Array.isArray(r.data);
       return { pass, detail: 'replaced = ' + JSON.stringify(r) };
     }
@@ -309,10 +298,16 @@ export default [
   {
     id: 'redirect-noop-js',
     rules: ['/resources/test-redirect-noop.js^$domain={{HOST}},script,redirect=noop.js'],
-    setupHtml: '<script src="/resources/test-redirect-noop.js"></script>',
-    setup: function() {},
-    check: async function() {
-      await new Promise(resolve => setTimeout(resolve, 200));
+    setup: function(ctx) {
+      ctx.ready = new Promise(resolve => {
+        const script = document.createElement('script');
+        script.src = '/resources/test-redirect-noop.js';
+        script.onload = script.onerror = resolve;
+        document.body.appendChild(script);
+      });
+    },
+    check: async function(ctx) {
+      await ctx.ready;
       return { pass: window.__testNoopJs__ === undefined, detail: 'sentinel = ' + window.__testNoopJs__ };
     }
   },
@@ -320,41 +315,45 @@ export default [
     id: 'redirect-1x1-gif',
     rules: ['/resources/test-redirect-1x1-gif.gif^$domain={{HOST}},image,redirect=1x1.gif'],
     setup: function(ctx) {
-      ctx.gifLoaded = false;
-      ctx.gifError = false;
-      const img = new Image();
-      img.onload = function() { ctx.gifLoaded = true; };
-      img.onerror = function() { ctx.gifError = true; };
-      img.src = '/resources/test-redirect-1x1-gif.gif';
+      ctx.result = new Promise(resolve => {
+        const img = new Image();
+        img.onload = function() { resolve({ loaded: true, error: false }); };
+        img.onerror = function() { resolve({ loaded: false, error: true }); };
+        img.src = '/resources/test-redirect-1x1-gif.gif';
+      });
     },
     check: async function(ctx) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return { pass: ctx.gifLoaded === true, detail: 'loaded = ' + ctx.gifLoaded + ', error = ' + ctx.gifError };
+      const r = await ctx.result;
+      return { pass: r.loaded === true, detail: 'loaded = ' + r.loaded + ', error = ' + r.error };
     }
   },
   {
     id: 'redirect-noop-json',
     rules: ['/resources/test-redirect-noop-json.json^$domain={{HOST}},xmlhttprequest,redirect=noop.json'],
     setup: function(ctx) {
-      ctx.result = null;
-      fetch('/resources/test-redirect-noop-json.json')
+      ctx.result = fetch('/resources/test-redirect-noop-json.json')
         .then(r => r.text())
-        .then(function(t) { ctx.result = t; })
-        .catch(function(e) { ctx.result = 'ERROR'; });
+        .catch(e => 'ERROR');
     },
     check: async function(ctx) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const pass = ctx.result === '{}';
-      return { pass: pass, detail: 'json = ' + ctx.result };
+      const r = await ctx.result;
+      const pass = r === '{}';
+      return { pass, detail: 'json = ' + r };
     }
   },
   {
     id: 'redirect-surrogate-adsbygoogle',
     rules: ['/resources/test-redirect-surrogate-adsbygoogle.js^$domain={{HOST}},script,redirect=googlesyndication_adsbygoogle.js'],
-    setupHtml: '<script src="/resources/test-redirect-surrogate-adsbygoogle.js"></script>',
-    setup: function() {},
-    check: async function() {
-      await new Promise(resolve => setTimeout(resolve, 200));
+    setup: function(ctx) {
+      ctx.ready = new Promise(resolve => {
+        const script = document.createElement('script');
+        script.src = '/resources/test-redirect-surrogate-adsbygoogle.js';
+        script.onload = script.onerror = resolve;
+        document.body.appendChild(script);
+      });
+    },
+    check: async function(ctx) {
+      await ctx.ready;
       const hasSentinel = typeof window.__testRedirectSurrogateAdsbygoogle__ !== 'undefined';
       const hasAdsbygoogle = typeof window.adsbygoogle !== 'undefined';
       return { pass: hasAdsbygoogle && !hasSentinel, detail: 'sentinel = ' + window.__testRedirectSurrogateAdsbygoogle__ + ', adsbygoogle = ' + typeof window.adsbygoogle };
