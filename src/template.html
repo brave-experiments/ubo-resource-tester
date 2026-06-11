@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <base href="/">
   <title>uBO Scriptlet &amp; Resource Regression Tests</title>
   <style>
     body {
@@ -149,16 +150,6 @@
     window.__RESOURCE_TESTS__ = [
     {{TEST_DATA}}
     ];
-  </script>
-  <script>
-    (function() {
-      let base = document.querySelector("base");
-      if (!base) {
-        base = document.createElement("base");
-        document.head.appendChild(base);
-      }
-      base.href = "/";
-    })();
   </script>
   <script>
 {{RUNNER}}
