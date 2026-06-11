@@ -122,6 +122,10 @@
         }
         updateRow(row, results[idx]);
         updateSummary();
+      }).catch(function(e) {
+        results[idx] = { id: test.id, pass: false, detail: 'check rejected: ' + e.message };
+        updateRow(row, results[idx]);
+        updateSummary();
       });
     } else {
       if (checkResult && typeof checkResult === 'object' && 'pass' in checkResult) {
