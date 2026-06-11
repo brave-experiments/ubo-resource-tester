@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, copyFileSync, mkdirSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, copyFileSync, mkdirSync, existsSync, readdirSync, rmSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -78,6 +78,11 @@ function copyResources() {
 }
 
 console.log('Generating test suite for host: ' + HOST);
+
+if (existsSync(resolve(__dirname, 'dist'))) {
+  rmSync(resolve(__dirname, 'dist'), { recursive: true });
+}
+mkdirSync(resolve(__dirname, 'dist'), { recursive: true });
 
 copyResources();
 console.log('Copied resources to dist/resources/');
