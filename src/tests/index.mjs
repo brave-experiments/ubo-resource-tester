@@ -192,6 +192,21 @@ export default [
     }
   },
   {
+    id: 'noeval-if',
+    rules: ['{{HOST}}##+js(noeval-if, /testPayload/)'],
+    setup: function() {
+      window.testEvalRan = false;
+    },
+    check: function() {
+      try {
+        eval('window.testEvalRan = true; /* testPayload */');
+        return { pass: window.testEvalRan === false, detail: 'evalRan = ' + window.testEvalRan };
+      } catch(e) {
+        return { pass: true, detail: 'eval threw: ' + e.message };
+      }
+    }
+  },
+  {
     id: 'prevent-fetch',
     rules: ['{{HOST}}##+js(prevent-fetch, /test-prevent-fetch\\.json/)'],
     setup: function(ctx) {
@@ -289,21 +304,6 @@ export default [
       const r = ctx.result;
       const pass = r.testPass !== undefined && r.data !== undefined && Array.isArray(r.data);
       return { pass, detail: 'replaced = ' + JSON.stringify(r) };
-    }
-  },
-  {
-    id: 'noeval-if',
-    rules: ['{{HOST}}##+js(noeval-if, /testPayload/)'],
-    setup: function() {
-      window.testEvalRan = false;
-    },
-    check: function() {
-      try {
-        eval('window.testEvalRan = true; /* testPayload */');
-        return { pass: window.testEvalRan === false, detail: 'evalRan = ' + window.testEvalRan };
-      } catch(e) {
-        return { pass: true, detail: 'eval threw: ' + e.message };
-      }
     }
   },
   {
