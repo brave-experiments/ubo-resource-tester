@@ -63,14 +63,15 @@
       }
     });
 
+    summaryEl.classList.remove('pending', 'pass', 'fail');
     if (pendingCount > 0) {
-      summaryEl.className = 'summary-pending';
+      summaryEl.classList.add('pending');
       summaryEl.textContent = 'Running... (' + passCount + ' pass, ' + failCount + ' fail, ' + pendingCount + ' pending of ' + tests.length + ')';
     } else if (failCount === 0) {
-      summaryEl.className = 'summary-pass';
+      summaryEl.classList.add('pass');
       summaryEl.textContent = 'ALL TESTS PASS (' + passCount + '/' + tests.length + ')';
     } else {
-      summaryEl.className = 'summary-fail';
+      summaryEl.classList.add('fail');
       summaryEl.textContent = 'FAILURES: ' + failCount + ' / ' + tests.length + ' total (pass: ' + passCount + ')';
     }
 

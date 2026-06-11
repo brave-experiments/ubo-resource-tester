@@ -44,8 +44,21 @@
     .fail {
       background: #3a1b1b;
     }
+    @keyframes loading {
+      0%    { background-position: 100% 50%; }
+      60%  { background-position: 0% 50%; }
+    }
     .pending {
-      background: #2a2a1a;
+      background: linear-gradient(
+        90deg,
+        #2f2a20 33.5%,
+        #433b2b 40%,
+        #5f5130 50%,
+        #433b2b 52.5%,
+        #2f2a20 55%
+      );
+      background-size: 300% 100%;
+      animation: loading 1s ease-in-out infinite;
     }
     .status {
       font-weight: bold;
@@ -76,16 +89,15 @@
       font-size: 15px;
       text-align: center;
     }
-    .summary-pass {
+    #test-summary.pass {
       background: #1b5e20;
       color: #a5d6a7;
     }
-    .summary-fail {
+    #test-summary.fail {
       background: #b71c1c;
       color: #ef9a9a;
     }
-    .summary-pending {
-      background: #4a4a1a;
+    #test-summary.pending {
       color: #ffe082;
     }
     .secondary-pages {
@@ -128,7 +140,8 @@
   <h4>Tests require adding <a href="/filters.txt">this filter list</a> to your adblocker's custom filters. <button class="retry-btn" onclick="window.__retryTests()">Clear storage and retry</button></h4>
 {{SECONDARY_SECTION}}
   <div id="test-results">
-    <div id="test-summary" class="summary-pending">
+    <div id="test-summary" class="pending">
+      &nbsp;
       <noscript>This test site will not function without JavaScript enabled.</noscript>
     </div>
   </div>
