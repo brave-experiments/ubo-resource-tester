@@ -81,7 +81,6 @@
 
       window.__RESOURCE_TEST_RESULTS__ = {
         host: window.location.hostname,
-        generatedAt: new Date().toISOString(),
         summary: { total: tests.length, pass: passCount, fail: failCount },
         results: results
       };
