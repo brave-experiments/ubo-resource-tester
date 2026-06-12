@@ -6,12 +6,6 @@
   const results = tests.map(function(t) { return { id: t.id, pass: null, detail: '' }; });
   let summaryEl = document.getElementById('test-summary');
 
-  if (!resultsContainer) {
-    resultsContainer = document.createElement('div');
-    resultsContainer.id = 'test-results';
-    document.body.appendChild(resultsContainer);
-  }
-
   document.documentElement.dataset.resourceTests = 'running';
 
   function buildRow(r) {
