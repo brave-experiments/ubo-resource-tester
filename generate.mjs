@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const HOST = process.argv[2] || 'localhost';
+const BASE_PATH = (process.env.BASE_PATH || '').replace(/\/+$/, '');
 
 const tests = (await import('./src/tests/index.mjs')).default;
 const template = readFileSync(resolve(__dirname, 'src/template.html'), 'utf-8');
@@ -41,6 +42,7 @@ function generateIndexHtml(testList, secondaryPages) {
   }
 
   return template
+    .replaceAll('{{BASE_PATH}}', BASE_PATH)
     .replace('{{FIXTURE_HTML}}', fixtureHtml)
     .replace('{{SECONDARY_SECTION}}', secondarySection)
     .replace('{{TEST_DATA}}', testData)

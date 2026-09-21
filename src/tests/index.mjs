@@ -210,7 +210,7 @@ export default [
     id: 'prevent-fetch',
     rules: ['{{HOST}}##+js(prevent-fetch, /test-prevent-fetch\\.json/)'],
     setup: function(ctx) {
-      ctx.result = fetch('/resources/test-prevent-fetch.json')
+      ctx.result = fetch('resources/test-prevent-fetch.json')
         .then(r => r.text())
         .catch(e => 'ERROR:' + e.message);
     },
@@ -224,7 +224,7 @@ export default [
     id: 'trusted-prevent-fetch',
     rules: ['{{HOST}}##+js(trusted-prevent-fetch, /test-trusted-prevent-fetch\\.json/)'],
     setup: function(ctx) {
-      ctx.result = fetch('/resources/test-trusted-prevent-fetch.json')
+      ctx.result = fetch('resources/test-trusted-prevent-fetch.json')
         .then(r => r.text())
         .catch(e => 'ERROR:' + e.message);
     },
@@ -240,7 +240,7 @@ export default [
     setup: function(ctx) {
       ctx.result = new Promise(resolve => {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', '/resources/test-prevent-xhr.json', true);
+        xhr.open('GET', 'resources/test-prevent-xhr.json', true);
         xhr.onload = function() { resolve(xhr.responseText); };
         xhr.onerror = function() { resolve('ERROR'); };
         xhr.send();
@@ -256,7 +256,7 @@ export default [
     id: 'json-prune',
     rules: ['{{HOST}}##+js(json-prune, test_json_prune)'],
     setup: function(ctx) {
-      ctx.result = fetch('/resources/test-json-prune.json')
+      ctx.result = fetch('resources/test-json-prune.json')
         .then(r => r.text())
         .then(j => JSON.parse(j))
         .catch(e => ({ _error: e.message }));
@@ -271,7 +271,7 @@ export default [
     id: 'json-prune-fetch-response',
     rules: ['{{HOST}}##+js(json-prune-fetch-response, test_json_prune_fetch_response)'],
     setup: function(ctx) {
-      ctx.result = fetch('/resources/test-json-prune-fetch-response.json')
+      ctx.result = fetch('resources/test-json-prune-fetch-response.json')
         .then(r => r.json())
         .catch(e => ({ _error: e.message }));
     },
@@ -285,7 +285,7 @@ export default [
     id: 'trusted-replace-fetch-response',
     rules: ['{{HOST}}##+js(trusted-replace-fetch-response, test_trusted_replace_fetch_response, testPass)'],
     setup: function(ctx) {
-      ctx.result = fetch('/resources/test-trusted-replace-fetch-response.json')
+      ctx.result = fetch('resources/test-trusted-replace-fetch-response.json')
         .then(r => r.json())
         .catch(e => 'ERROR:' + e.message);
     },
@@ -301,7 +301,7 @@ export default [
     setup: function(ctx) {
       ctx.ready = new Promise(resolve => {
         const script = document.createElement('script');
-        script.src = '/resources/test-redirect-noop.js';
+        script.src = 'resources/test-redirect-noop.js';
         script.onload = script.onerror = resolve;
         document.body.appendChild(script);
       });
@@ -319,7 +319,7 @@ export default [
         const img = new Image();
         img.onload = function() { resolve({ loaded: true, error: false }); };
         img.onerror = function() { resolve({ loaded: false, error: true }); };
-        img.src = '/resources/test-redirect-1x1-gif.gif';
+        img.src = 'resources/test-redirect-1x1-gif.gif';
       });
     },
     check: async function(ctx) {
@@ -331,7 +331,7 @@ export default [
     id: 'redirect-noop-json',
     rules: ['/resources/test-redirect-noop-json.json^$domain={{HOST}},xmlhttprequest,redirect=noop.json'],
     setup: function(ctx) {
-      ctx.result = fetch('/resources/test-redirect-noop-json.json')
+      ctx.result = fetch('resources/test-redirect-noop-json.json')
         .then(r => r.text())
         .catch(e => 'ERROR');
     },
@@ -347,7 +347,7 @@ export default [
     setup: function(ctx) {
       ctx.ready = new Promise(resolve => {
         const script = document.createElement('script');
-        script.src = '/resources/test-redirect-surrogate-adsbygoogle.js';
+        script.src = 'resources/test-redirect-surrogate-adsbygoogle.js';
         script.onload = script.onerror = resolve;
         document.body.appendChild(script);
       });
