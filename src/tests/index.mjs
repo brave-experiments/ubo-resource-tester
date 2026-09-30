@@ -40,11 +40,11 @@ export default [
   },
   {
     id: 'aeld',
-    rules: ['{{HOST}}##+js(aeld, click)'],
+    rules: ['{{HOST}}##+js(aeld, click, test-aeld-needle)'],
     setup: function(ctx) {
       ctx.clicked = false;
       document.body.addEventListener('click', function() {
-        ctx.clicked = true;
+        ctx.clicked = true; /* test-aeld-needle */
       });
     },
     check: function(ctx) {
