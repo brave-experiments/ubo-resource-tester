@@ -159,4 +159,6 @@
     });
     location.reload();
   };
+
+  document.getElementById('retry-tests').addEventListener('click', window.__retryTests);
 })();

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <base href="{{BASE_PATH}}/">
+  <meta http-equiv="Content-Security-Policy" content="{{CONTENT_SECURITY_POLICY}}">
   <title>uBO Scriptlet &amp; Resource Regression Tests</title>
   <style>
     body {
@@ -138,7 +139,7 @@
 <body>
   <div id="setup">{{FIXTURE_HTML}}</div>
   <h1>uBO Scriptlet &amp; Resource Regression Tests</h1>
-  <h4>Tests require adding <a href="{{BASE_PATH}}/filters.txt">this filter list</a> to your adblocker's custom filters. <button class="retry-btn" onclick="window.__retryTests()">Clear storage and retry</button></h4>
+  <h4>Tests require adding <a href="{{BASE_PATH}}/filters.txt">this filter list</a> to your adblocker's custom filters. <button class="retry-btn" id="retry-tests">Clear storage and retry</button></h4>
 {{SECONDARY_SECTION}}
   <div id="test-results">
     <div id="test-summary" class="pending">
